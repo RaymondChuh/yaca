@@ -7,13 +7,15 @@ import thunkMiddleware from 'redux-thunk'
 import createLogger from 'redux-logger'
 
 // Reducers
-import users from './reducers/users.js'
-import login from './reducers/login.js'
+import users from './reducers/users'
+import login from './reducers/login'
+import rooms from './reducers/rooms'
 
 // Containers
 import UserContainer from './containers/UserContainer.jsx'
 import UserTable from './components/UserTable.jsx'
 import EmailLoginForm from './components/EmailLoginForm.jsx'
+import MessageBox from './components/MessageBox.jsx'
 
 // Actions
 import {loadUsers} from './actions'
@@ -23,7 +25,8 @@ const loggerMiddleware = createLogger();
 var store = createStore(
   combineReducers({
     users,
-    login
+    login,
+    rooms
   }, {}),
   applyMiddleware(
     thunkMiddleware,
@@ -36,6 +39,7 @@ ReactDom.render(
   <Provider store={store}>
       <div>
         <EmailLoginForm></EmailLoginForm>
+        <MessageBox></MessageBox>
       </div>
   </Provider>,
   document.getElementById('app')
