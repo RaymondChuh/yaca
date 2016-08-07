@@ -1,6 +1,6 @@
 import {createAction} from 'redux-actions';
 import firebase from '../services/Firebase'
-
+import {push} from 'react-router-redux'
 
 const receiveUsers = createAction('RECEIVE_USERS');
 
@@ -11,6 +11,7 @@ const login = (accInfo) => {
       .then(function(user){
         console.log('success login', user);
         dispatch(loginSuccess(user));
+        dispatch(push('/dialog'));
       })
       .catch(function(error) {
         let errorCode = error.code;
