@@ -1,13 +1,16 @@
 import {createAction} from 'redux-actions';
-import firebase from '../services/Firebase'
+import appBackend from '../services/AppBackend'
 import {push} from 'react-router-redux'
 
+const firebase = require('firebase');
 const receiveUsers = createAction('RECEIVE_USERS');
 
+
+/*** Login ***/
 const login = (accInfo) => {
   return function(dispatch){
     dispatch(loginStart());
-    firebase.auth().signInWithEmailAndPassword(accInfo.email, accInfo.password)
+    appBackend.auth().signInWithEmailAndPassword(accInfo.email, accInfo.password)
       .then(function(user){
         console.log('success login', user);
         dispatch(loginSuccess(user));
@@ -27,15 +30,31 @@ const loginFail = createAction('LOGIN_FAIL');
 
 const sendMessage = (message, roomId) => {
   return function(dispatch){
-    let msg = firebase.database().ref('/messages/'+roomId).push({message, timestamp:Date.now()});
+    let topush = {message, timestamp:firebase.database.ServerValue.TIMESTAMP}
+    let msg = appBackend.database().ref('/messages/'+roomId).push(topush, (data, error) => {
+      console.log('push done', data, error);
+    });
     console.log('message id', msg.key);
   }
 };
 const sendMessageSuccess = createAction('SEND_MESSAGE_SUCCESS');
 
+
+
+/*** Message ***/
+const loadRecentMessage = (roomId) => {
+    return (dispatch) => {
+        appBackend.database().ref('messages/'+roomId).on('value', (snapshot) => {
+            dispatch(loadRecentMessageSuccess(snapshot));
+        })
+    }
+}
+const loadRecentMessageSuccess = createAction('LOAD_RECENT_MESSAGE_SUCCESS');
+
+/*** User ***/
 const loadUsers = () => {
   return function(dispatch) {
-    let users = firebase.database().ref('/users');
+    let users = appBackend.database().ref('/users');
     let p = new Promise((resolve, reject) => {
       users.on('value', function(snapshot){
         console.log(snapshot.val());
@@ -52,4 +71,4 @@ const loadUsers = () => {
 
 
 
-export {loadUsers, login, sendMessage}
+export {loadUsers, login, sendMessage, loadRecentMessage}

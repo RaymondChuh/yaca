@@ -10,12 +10,12 @@ import createLogger from 'redux-logger'
 import users from './reducers/users'
 import login from './reducers/login'
 import rooms from './reducers/rooms'
+import messages from './reducers/messages'
 
 // Containers
 import UserContainer from './containers/UserContainer.jsx'
 import UserTable from './components/UserTable.jsx'
 import EmailLoginForm from './components/EmailLoginForm.jsx'
-import MessageBox from './components/MessageBox.jsx'
 import App from './app.jsx'
 import LoginView from './components/LoginView.jsx'
 import DialogView from './components/DialogView.jsx'
@@ -37,7 +37,8 @@ var store = createStore(
     users,
     login,
     rooms,
-    routing: routerReducer
+    routing: routerReducer,
+    messages
   }),
   applyMiddleware(
     thunkMiddleware,
@@ -48,15 +49,13 @@ var store = createStore(
 const history = syncHistoryWithStore(hashHistory, store)
 
 ReactDom.render(
-  <Provider store={store}>
+  <Provider store={store} className='abc'>
     <Router history={history}>
       <Route path='/' component={App}>
         <Route component={LoginView}>
             <IndexRoute component={EmailLoginForm}></IndexRoute>
         </Route>
-        <Route component={DialogView}>
-            <Route path='dialog' component={MessageBox}/>
-        </Route>
+        <Route path='dialog' component={DialogView}></Route>
       </Route>
     </Router>
   </Provider>,
