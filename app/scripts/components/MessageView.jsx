@@ -6,7 +6,7 @@ export default ({messages}) => {
     {
       messages?
       messages.map((msg) => {
-        return <div>{msg.message}</div>
+        return <div key={msg.id}>{msg.message}</div>
       }):''
     }
   </div>

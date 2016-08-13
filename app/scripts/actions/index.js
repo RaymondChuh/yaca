@@ -5,6 +5,21 @@ import {push} from 'react-router-redux'
 const firebase = require('firebase');
 const receiveUsers = createAction('RECEIVE_USERS');
 
+const chkUserLoginState = () => {
+  return function(dispatch){
+    dispatch(chkUserLoginStateStart());
+    appBackend.auth().onAuthStateChanged(function(user){
+        if (user) {
+          dispatch(push('/dialog'));
+        } else {
+          dispatch(push('/login'));
+        }
+        dispatch(chkUserLoginStateSuccess(user));
+    });
+  }
+}
+const chkUserLoginStateStart = createAction('CHECK_USER_LOGIN_STATE_START');
+const chkUserLoginStateSuccess = createAction('CHECK_USER_LOGIN_STATE_SUCCESS');
 
 /*** Login ***/
 const login = (accInfo) => {
@@ -34,7 +49,6 @@ const sendMessage = (message, roomId) => {
     let msg = appBackend.database().ref('/messages/'+roomId).push(topush, (data, error) => {
       console.log('push done', data, error);
     });
-    console.log('message id', msg.key);
   }
 };
 const sendMessageSuccess = createAction('SEND_MESSAGE_SUCCESS');
@@ -71,4 +85,4 @@ const loadUsers = () => {
 
 
 
-export {loadUsers, login, sendMessage, loadRecentMessage}
+export {loadUsers, login, sendMessage, loadRecentMessage, chkUserLoginState}

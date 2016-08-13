@@ -12,13 +12,15 @@ import login from './reducers/login'
 import rooms from './reducers/rooms'
 import messages from './reducers/messages'
 
-// Containers
+// Containers & components
 import UserContainer from './containers/UserContainer.jsx'
 import UserTable from './components/UserTable.jsx'
 import EmailLoginForm from './components/EmailLoginForm.jsx'
 import App from './app.jsx'
 import LoginView from './components/LoginView.jsx'
 import DialogView from './components/DialogView.jsx'
+import BlockLoading from './components/BlockLoading.jsx'
+
 
 // Router
 import {Router, Route, hashHistory, IndexRoute} from 'react-router'
@@ -49,11 +51,12 @@ var store = createStore(
 const history = syncHistoryWithStore(hashHistory, store)
 
 ReactDom.render(
-  <Provider store={store} className='abc'>
+  <Provider store={store}>
     <Router history={history}>
       <Route path='/' component={App}>
-        <Route component={LoginView}>
-            <IndexRoute component={EmailLoginForm}></IndexRoute>
+        <IndexRoute component={BlockLoading}></IndexRoute>
+        <Route path='login' component={LoginView}>
+            <Route component={EmailLoginForm}></Route>
         </Route>
         <Route path='dialog' component={DialogView}></Route>
       </Route>
