@@ -8,6 +8,14 @@ html, body, .yaca-app, div.yaca-app>div {
   height: 100%
 }
 
+.yaca-app-header {
+  height: 10%
+}
+
+.yaca-app-body {
+  height: 90%
+}
+
 .yaca-dialog-view {
   height: 100%
 }

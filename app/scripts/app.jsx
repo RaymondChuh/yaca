@@ -1,9 +1,22 @@
-import React from 'react'
-import {Link} from 'react-router'
+import React from 'react';
+import {connect} from 'react-redux';
+import {logout} from './actions';
 
 
-const App = ({children}) => {
-  return <div>{children}</div>
+const App = ({children, dispatch}) => {
+
+  return (
+  <div>
+    <div className="pure-g yaca-app-header">
+      <div className="pure-u-2-24"></div>
+      <div className="pure-u-20-24"></div>
+      <div className="pure-u-2-24">
+        <a href="" onClick={() => {dispatch(logout())}}>Logout</a>
+      </div>
+    </div>
+    <div className="yaca-app-body">{children}</div>
+  </div>
+  )
 }
 
-export default App;
+export default connect()(App);

@@ -3,7 +3,6 @@ import {loadRecentMessage} from '../actions'
 import {connect} from 'react-redux'
 import MessageBox from './MessageBox.jsx'
 import MessageView from './MessageView.jsx'
-import appBackend from '../services/AppBackend'
 
 const mapStateToProps = state => ({
   selectedRoom: state.rooms.selectedRoom,

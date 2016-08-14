@@ -1,14 +1,15 @@
 import {createAction} from 'redux-actions';
 import appBackend from '../services/AppBackend'
-import {push} from 'react-router-redux'
+import {push} from 'react-router-redux';
+import googleAuthProvider from '../auth/GoogleAuthProvider';
 
 const firebase = require('firebase');
 const receiveUsers = createAction('RECEIVE_USERS');
 
 const chkUserLoginState = () => {
-  return function(dispatch){
+  return function(dispatch) {
     dispatch(chkUserLoginStateStart());
-    appBackend.auth().onAuthStateChanged(function(user){
+    appBackend.auth().onAuthStateChanged(function(user) {
         if (user) {
           dispatch(push('/dialog'));
         } else {
@@ -20,6 +21,49 @@ const chkUserLoginState = () => {
 }
 const chkUserLoginStateStart = createAction('CHECK_USER_LOGIN_STATE_START');
 const chkUserLoginStateSuccess = createAction('CHECK_USER_LOGIN_STATE_SUCCESS');
+
+
+const logout = () => {
+  return function(dispatch) {
+    firebase.auth().signOut()
+      .then(function(data) {
+        dispatch(logoutSuccess());
+        dispatch(push('/login'));
+        console.log(data);
+      }).catch(function(error) {
+        dispatch(logoutFail());
+        console.log(error);
+      })
+  }
+};
+const logoutSuccess = createAction('LOGOUT_SUCCESS');
+const logoutFail = createAction('LOGOUT_FAIL');
+
+/*** Google Auth ***/
+const loginViaGoogle = () => {
+  return function(dispatch) {
+    dispatch(loginStart());
+    firebase.auth().signInWithPopup(googleAuthProvider).then(function(result) {
+      // This gives you a Google Access Token. You can use it to access the Google API.
+      let token = result.credential.accessToken;
+      // The signed-in user info.
+      let user = result.user;
+      dispatch(loginSuccess(user));
+      dispatch(push('/dialog'));
+      console.log(user);
+    }).catch(function(error) {
+      // Handle Errors here.
+      let errorCode = error.code;
+      let errorMessage = error.message;
+      // The email of the user's account used.
+      let email = error.email;
+      // The firebase.auth.AuthCredential type that was used.
+      let credential = error.credential;
+      dispatch(loginFail(error));
+      console.log(error);
+    });
+  }
+}
 
 /*** Login ***/
 const login = (accInfo) => {
@@ -85,4 +129,12 @@ const loadUsers = () => {
 
 
 
-export {loadUsers, login, sendMessage, loadRecentMessage, chkUserLoginState}
+export {
+  loadUsers,
+  login,
+  sendMessage,
+  loadRecentMessage,
+  chkUserLoginState,
+  loginViaGoogle,
+  logout
+}
