@@ -9,14 +9,27 @@ const mapStateToProps = state => ({
   messages: state.messages
 })
 
+let messageScrollView;
+
+const scrollToBottom = ele => {
+  messageScrollView = ele;
+  ele.scrollTop = ele.scrollHeight;
+}
+
 class DialogView extends React.Component {
   componentDidMount() {
     console.log('dialog view did mount');
     this.props.dispatch(loadRecentMessage(this.props.selectedRoom));
   }
+
+  componentDidUpdate() {
+      scrollToBottom(messageScrollView);
+  }
+
   render() {
     return <div className="yaca-dialog-view">
-      <div className="pure-g yaca-message-view">
+      <div id="msgView" className="pure-g yaca-message-view"
+        ref={ele => messageScrollView = ele}>
         <div className="pure-u-2-24"></div>
         <div className="pure-u-20-24">
           <MessageView messages={this.props.messages}></MessageView>
