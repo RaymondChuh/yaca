@@ -4,7 +4,7 @@ import {push} from 'react-router-redux';
 import googleAuthProvider from '../auth/GoogleAuthProvider';
 
 const firebase = require('firebase');
-const receiveUsers = createAction('RECEIVE_USERS');
+
 
 const chkUserLoginState = () => {
   return function(dispatch) {
@@ -87,9 +87,15 @@ const loginStart = createAction('LOGIN_START');
 const loginSuccess = createAction('LOGIN_SUCCESS');
 const loginFail = createAction('LOGIN_FAIL');
 
-const sendMessage = (message, roomId) => {
+const sendMessage = (message, roomId, currentUser) => {
   return function(dispatch){
-    let topush = {message, timestamp:firebase.database.ServerValue.TIMESTAMP}
+    let topush = {
+      message,
+      timestamp:firebase.database.ServerValue.TIMESTAMP,
+      user: {
+        uid: currentUser.uid
+      }
+    }
     let msg = appBackend.database().ref('/messages/'+roomId).push(topush, (data, error) => {
       console.log('push done', data, error);
     });
@@ -109,28 +115,8 @@ const loadRecentMessage = (roomId) => {
 }
 const loadRecentMessageSuccess = createAction('LOAD_RECENT_MESSAGE_SUCCESS');
 
-/*** User ***/
-const loadUsers = () => {
-  return function(dispatch) {
-    let users = appBackend.database().ref('/users');
-    let p = new Promise((resolve, reject) => {
-      users.on('value', function(snapshot){
-        console.log(snapshot.val());
-        resolve(snapshot.val());
-        dispatch(receiveUsers(snapshot.val()));
-      }, function(e){
-        console.log(e);
-      })
-    })
-    return p;
-  }
-};
-
-
-
 
 export {
-  loadUsers,
   login,
   sendMessage,
   loadRecentMessage,

@@ -7,7 +7,7 @@ import thunkMiddleware from 'redux-thunk';
 import createLogger from 'redux-logger';
 
 // Reducers
-import users from './reducers/users';
+import {currentUser} from './reducers/user';
 import login from './reducers/login';
 import rooms from './reducers/rooms';
 import messages from './reducers/messages';
@@ -27,8 +27,6 @@ import BlockLoading from './components/BlockLoading.jsx';
 import {Router, Route, hashHistory, IndexRoute} from 'react-router';
 import {syncHistoryWithStore, routerReducer, routerMiddleware} from 'react-router-redux';
 
-// Actions
-import {loadUsers} from './actions';
 
 
 const loggerMiddleware = createLogger();
@@ -37,7 +35,7 @@ const middleware = routerMiddleware(hashHistory);
 
 var store = createStore(
   combineReducers({
-    users,
+    currentUser,
     login,
     rooms,
     routing: routerReducer,
