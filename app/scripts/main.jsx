@@ -17,9 +17,11 @@ import UserContainer from './containers/UserContainer.jsx';
 import UserTable from './components/UserTable.jsx';
 // import EmailLoginForm from './components/EmailLoginForm.jsx'
 import App from './app.jsx';
-import LoginView from './components/LoginView.jsx';
+import AuthView from './components/AuthView.jsx';
 import DialogView from './components/DialogView.jsx';
 import BlockLoading from './components/BlockLoading.jsx';
+import AuthProviderList from './components/AuthProviderList.jsx';
+import GoogleAuthForm from './components/GoogleAuthForm.jsx';
 
 
 
@@ -54,8 +56,12 @@ ReactDom.render(
     <Router history={history}>
       <Route path='/' component={App}>
         <IndexRoute component={BlockLoading}></IndexRoute>
-        <Route path='login' component={LoginView}></Route>
+        <Route component={AuthView}>
+            <Route path='login' component={GoogleAuthForm}></Route>
+            <Route path='auth-connect' component={AuthProviderList}></Route>
+        </Route>
         <Route path='dialog' component={DialogView}></Route>
+        <Route path='auth-connect' component={AuthProviderList}></Route>
       </Route>
     </Router>
   </Provider>,

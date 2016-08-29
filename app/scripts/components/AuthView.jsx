@@ -1,11 +1,11 @@
 import React from 'react'
 import GoogleAuthForm from './GoogleAuthForm.jsx';
 
-export default () => {
+export default ({children}) => {
   return <div className="pure-g yaca-vcenter">
     <div className="pure-u-1-3"></div>
     <div className="pure-u-1-3">
-      <GoogleAuthForm></GoogleAuthForm>
+      {children}
     </div>
     <div className="pure-u-1-3"></div>
   </div>

@@ -1,6 +1,8 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {logout} from './actions';
+import {Link} from 'react-router';
+
 
 
 const App = ({children, dispatch}) => {
@@ -11,6 +13,9 @@ const App = ({children, dispatch}) => {
       <div className="pure-u-2-24"></div>
       <div className="pure-u-20-24"></div>
       <div className="pure-u-2-24">
+        {/*
+        <Link to={"/auth-connect"} className="pure-button pure-button-primary">Link Other Account</Link>
+        */}
         <a href="" onClick={() => {dispatch(logout())}}>Logout</a>
       </div>
     </div>

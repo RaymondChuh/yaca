@@ -116,11 +116,23 @@ const loadRecentMessage = (roomId) => {
 const loadRecentMessageSuccess = createAction('LOAD_RECENT_MESSAGE_SUCCESS');
 
 
+/*** Link other account together ***/
+const linkOtherAccount = (accountType, currentUser) => {
+  linkOtherAccountStart();
+  console.log(accountType, currentUser);
+  return function(dispatch) {
+
+  }
+}
+const linkOtherAccountStart = createAction('LINK_OTHER_ACCOUNT_START');
+const linkOtherAccountSuccess = createAction('LINK_OTHER_ACCOUNT_SUCCESS');
+
 export {
   login,
   sendMessage,
   loadRecentMessage,
   chkUserLoginState,
   loginViaGoogle,
+  linkOtherAccount,
   logout
 }
