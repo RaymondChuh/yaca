@@ -11,6 +11,7 @@ const chkUserLoginState = () => {
     dispatch(chkUserLoginStateStart());
     appBackend.auth().onAuthStateChanged(function(user) {
         if (user) {
+          dispatch(createOrUpdateUserInfo(user));
           dispatch(push('/dialog'));
         } else {
           dispatch(push('/login'));
@@ -22,6 +23,25 @@ const chkUserLoginState = () => {
 const chkUserLoginStateStart = createAction('CHECK_USER_LOGIN_STATE_START');
 const chkUserLoginStateSuccess = createAction('CHECK_USER_LOGIN_STATE_SUCCESS');
 
+const createOrUpdateUserInfo = (user) => {
+  return function(dispatch) {
+    dispatch(createOrUpdateUserInfoStart());
+    appBackend.database().ref('users/'+user.uid).once('value').then((snapshot) => {
+      let updatedUserInfo = {
+        uid: user.uid,
+        photoURL: user.photoURL,
+        displayName: user.displayName
+      };
+      if (!snapshot.val()) {
+        appBackend.database().ref('users/'+user.uid).push(updatedUserInfo);
+      } else {
+        appBackend.database().ref('users/'+user.uid).set(updatedUserInfo);
+      }
+    })
+  }
+}
+const createOrUpdateUserInfoStart = createAction('CREATE_OR_UPDATE_USER_INFO_START');
+const createOrUpdateUserInfoSuccess = createAction('CREATE_OR_UPDATE_USER_INFO_SUCCESS');
 
 const logout = () => {
   return function(dispatch) {
@@ -115,6 +135,15 @@ const loadRecentMessage = (roomId) => {
 }
 const loadRecentMessageSuccess = createAction('LOAD_RECENT_MESSAGE_SUCCESS');
 
+const loadMessageUser = (userIds) => {
+  return dispatch => {
+    // appBackend.database().ref('users/'+roomId)
+    //     .equalTo()
+    //     .on('value', (snapshot) => {
+    //     dispatch(loadRecentMessageSuccess(snapshot));
+    // })
+  }
+}
 
 /*** Link other account together ***/
 const linkOtherAccount = (accountType, currentUser) => {
