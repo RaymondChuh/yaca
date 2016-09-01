@@ -2,8 +2,8 @@ const messages = (state=[], action) => {
     switch (action.type) {
       case 'LOAD_RECENT_MESSAGE_SUCCESS':
           let msgs = [];
-          action.payload.forEach((childSnapshot) => {
-            msgs.push(Object.assign({}, {id:childSnapshot.key}, childSnapshot.val()));
+          Object.keys(action.payload).forEach(msgId => {
+            msgs.push(Object.assign({}, {id:msgId}, action.payload[msgId]));
           })
           return msgs;
       default:

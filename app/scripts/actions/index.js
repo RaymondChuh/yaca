@@ -26,17 +26,18 @@ const chkUserLoginStateSuccess = createAction('CHECK_USER_LOGIN_STATE_SUCCESS');
 const createOrUpdateUserInfo = (user) => {
   return function(dispatch) {
     dispatch(createOrUpdateUserInfoStart());
-    appBackend.database().ref('users/'+user.uid).once('value').then((snapshot) => {
+    appBackend.database().ref('users').once('value').then((snapshot) => {
       let updatedUserInfo = {
         uid: user.uid,
         photoURL: user.photoURL,
         displayName: user.displayName
       };
       if (!snapshot.val()) {
-        appBackend.database().ref('users/'+user.uid).push(updatedUserInfo);
+        appBackend.database().ref('users').push(updatedUserInfo);
       } else {
-        appBackend.database().ref('users/'+user.uid).set(updatedUserInfo);
+        appBackend.database().ref('users').set(updatedUserInfo);
       }
+      dispatch(loadChatRoom('r0'));
     })
   }
 }
@@ -127,23 +128,34 @@ const sendMessageSuccess = createAction('SEND_MESSAGE_SUCCESS');
 
 /*** Message ***/
 const loadRecentMessage = (roomId) => {
+
     return (dispatch) => {
-        appBackend.database().ref('messages/'+roomId).on('value', (snapshot) => {
-            dispatch(loadRecentMessageSuccess(snapshot));
-        })
+        let p = new Promise(function(resolve, reject){
+          appBackend.database().ref('messages/'+roomId).on('value', (snapshot) => {
+              let messages = snapshot.val();
+              dispatch(loadRecentMessageSuccess(messages));
+              resolve(messages);
+          });
+        });
+        return p;
     }
 }
 const loadRecentMessageSuccess = createAction('LOAD_RECENT_MESSAGE_SUCCESS');
 
-const loadMessageUser = (userIds) => {
+const loadChatRoom = (roomId) => {
   return dispatch => {
-    // appBackend.database().ref('users/'+roomId)
-    //     .equalTo()
-    //     .on('value', (snapshot) => {
-    //     dispatch(loadRecentMessageSuccess(snapshot));
-    // })
+    let p = new Promise(function(resolve, reject){
+      appBackend.database().ref('rooms/'+roomId)
+          .on('value', (snapshot) => {
+            dispatch(loadChatRoomSuccess(snapshot.val()));
+            resolve(snapshot.val());
+          });
+    })
+    return p;
   }
 }
+const loadChatRoomSuccess = createAction('LOAD_CHAT_ROOM_SUCCESS');
+const loadChatRoomAndMessageSuccess = createAction('LOAD_CHAT_ROOM_AND_MESSAGE_SUCCESS');
 
 /*** Link other account together ***/
 const linkOtherAccount = (accountType, currentUser) => {
@@ -160,6 +172,8 @@ export {
   login,
   sendMessage,
   loadRecentMessage,
+  loadRecentMessageSuccess,
+  loadChatRoom,
   chkUserLoginState,
   loginViaGoogle,
   linkOtherAccount,

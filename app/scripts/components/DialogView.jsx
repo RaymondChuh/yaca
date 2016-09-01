@@ -1,5 +1,5 @@
 import React from 'react'
-import {loadRecentMessage} from '../actions'
+import {loadRecentMessage, loadChatRoom, loadChatRoomAndMessageSuccess} from '../actions'
 import {connect} from 'react-redux'
 import MessageBox from './MessageBox.jsx'
 import MessageView from './MessageView.jsx'
@@ -18,8 +18,15 @@ const scrollToBottom = ele => {
 
 class DialogView extends React.Component {
   componentDidMount() {
+    let pendingActions = [];
     console.log('dialog view did mount');
-    this.props.dispatch(loadRecentMessage(this.props.selectedRoom));
+    pendingActions.push(this.props.dispatch(loadRecentMessage(this.props.selectedRoom)));
+    pendingActions.push(this.props.dispatch(loadChatRoom(this.props.selectedRoom)));
+    console.log(pendingActions);
+    Promise.all(pendingActions).then(function(results){
+      this.props.dispatch(loadChatRoomAndMessageSuccess(results));
+      console.log(results);
+    })
   }
 
   componentDidUpdate() {
