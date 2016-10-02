@@ -5,8 +5,8 @@ import {connect} from 'react-redux';
 const mapStateToProps = state => {
   return {
     currentUser: state.currentUser
-  }
-}
+  };
+};
 
 
 class AuthProviderList extends React.Component{
@@ -14,7 +14,7 @@ class AuthProviderList extends React.Component{
         super();
         this.state = {
           selectedAuthProvider: ''
-        }
+        };
     }
 
     handleOptionChange(e) {
@@ -41,9 +41,9 @@ class AuthProviderList extends React.Component{
             </button>
           </div>
         </form>
-      )
+      );
     }
-};
+}
 
 
 

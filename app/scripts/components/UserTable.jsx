@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 
 const UserTable = () => (
   <table className="pure-table">
@@ -22,6 +22,6 @@ const UserTable = () => (
     </tbody>
   </table>
 
-)
+);
 
 export default UserTable;

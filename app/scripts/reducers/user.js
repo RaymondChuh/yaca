@@ -6,6 +6,6 @@ const currentUser = (state = {}, action) => {
     default:
       return state;
   }
-}
+};
 
 export {currentUser};

@@ -7,11 +7,11 @@ const GoogleAuthForm = ({dispatch}) => {
       <div>
         <p>You are not login. </p>
         <button type="button" className="pure-button pure-button-primary"
-          onClick={() => {dispatch(loginViaGoogle())}}>
+          onClick={() => {dispatch(loginViaGoogle());}}>
           Login via Google
         </button>
       </div>
-    )
-}
+    );
+};
 
 export default connect()(GoogleAuthForm);

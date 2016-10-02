@@ -13,9 +13,6 @@ import rooms from './reducers/rooms';
 import messages from './reducers/messages';
 
 // Containers & components
-import UserContainer from './containers/UserContainer.jsx';
-import UserTable from './components/UserTable.jsx';
-// import EmailLoginForm from './components/EmailLoginForm.jsx'
 import App from './app.jsx';
 import AuthView from './components/AuthView.jsx';
 import DialogView from './components/DialogView.jsx';
@@ -49,7 +46,7 @@ var store = createStore(
     middleware
   )
 );
-const history = syncHistoryWithStore(hashHistory, store)
+const history = syncHistoryWithStore(hashHistory, store);
 
 ReactDom.render(
   <Provider store={store}>

@@ -24,12 +24,12 @@ const messages = (state=[], action) => {
                 };
               }
               return displayMsg;
-            })
+            });
           return displayMsgs;
       default:
           return state;
     }
-}
+};
 
 
 export default messages;

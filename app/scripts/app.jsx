@@ -1,7 +1,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {logout} from './actions';
-import {Link} from 'react-router';
 
 
 
@@ -16,12 +15,12 @@ const App = ({children, dispatch}) => {
         {/*
         <Link to={"/auth-connect"} className="pure-button pure-button-primary">Link Other Account</Link>
         */}
-        <a href="" onClick={() => {dispatch(logout())}}>Logout</a>
+        <a href="" onClick={() => {dispatch(logout());}}>Logout</a>
       </div>
     </div>
     <div className="yaca-app-body">{children}</div>
   </div>
-  )
-}
+  );
+};
 
 export default connect()(App);

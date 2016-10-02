@@ -8,14 +8,15 @@ class BlockLoading extends React.Component {
       this.props.dispatch(chkUserLoginState());
     }
     render() {
-      return <div className="pure-g yaca-vcenter">
-        <div className="pure-u-1-3"></div>
-        <div className="pure-u-1-3">
-          Loading...
+      return (
+        <div className="pure-g yaca-vcenter">
+          <div className="pure-u-1-3"></div>
+          <div className="pure-u-1-3">
+            Loading...
+          </div>
+          <div className="pure-u-1-3"></div>
         </div>
-        <div className="pure-u-1-3"></div>
-      </div>
-
+      );
     }
 }
 

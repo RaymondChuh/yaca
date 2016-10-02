@@ -1,5 +1,4 @@
-import React from 'react'
-import {connect} from 'react-redux'
+import React from 'react';
 
 export default ({messages}) => {
   return (
@@ -16,9 +15,9 @@ export default ({messages}) => {
               </div>
               <div>{msg.message}</div>
             </div>
-          )
+          );
         }):''
       }
     </div>
-  )
-}
+  );
+};
