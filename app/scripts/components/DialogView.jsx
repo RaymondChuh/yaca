@@ -23,8 +23,11 @@ class DialogView extends React.Component {
     pendingActions.push(this.props.dispatch(loadRecentMessage(this.props.selectedRoom)));
     pendingActions.push(this.props.dispatch(loadChatRoom(this.props.selectedRoom)));
     console.log(pendingActions);
-    Promise.all(pendingActions).then(function(results){
-      this.props.dispatch(loadChatRoomAndMessageSuccess(results));
+    Promise.all(pendingActions).then(results => {
+      this.props.dispatch(loadChatRoomAndMessageSuccess({
+        recentMessages: results[0],
+        chatRoom: results[1]
+      }));
       console.log(results);
     })
   }

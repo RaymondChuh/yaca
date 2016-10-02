@@ -9,38 +9,66 @@ const firebase = require('firebase');
 const chkUserLoginState = () => {
   return function(dispatch) {
     dispatch(chkUserLoginStateStart());
-    appBackend.auth().onAuthStateChanged(function(user) {
-        if (user) {
-          dispatch(createOrUpdateUserInfo(user));
+    appBackend.auth().onAuthStateChanged(function(loginAcc) {
+        if (loginAcc) {
+          // check if login account has linked to a chat app user
+          appBackend.database().ref('users')
+            .orderByChild('uid')
+            .equalTo(loginAcc.uid)
+            .once('value').then((snapshot) => {
+              let user = {
+                    uid: loginAcc.uid,
+                    photoURL: loginAcc.photoURL,
+                    displayName: loginAcc.displayName
+                  },
+                  chatRoomUser = snapshot.val(),
+                  newUserId, userId;
+              // No chat app user exists, create new
+              if (!chatRoomUser) {
+                newUserId = appBackend.database().ref('users').push().key;
+                user.id = newUserId;
+                dispatch(createNewUser(user));
+              } else {
+              // Found existing chat app user, update it.
+                userId = Object.keys(chatRoomUser)[0];
+                user.id = userId;
+                dispatch(updateExistingUser(user, userId));
+              }
+              dispatch(chkUserLoginStateSuccess(user));
+            })
           dispatch(push('/dialog'));
         } else {
           dispatch(push('/login'));
         }
-        dispatch(chkUserLoginStateSuccess(user));
+
     });
   }
 }
 const chkUserLoginStateStart = createAction('CHECK_USER_LOGIN_STATE_START');
 const chkUserLoginStateSuccess = createAction('CHECK_USER_LOGIN_STATE_SUCCESS');
 
-const createOrUpdateUserInfo = (user) => {
+const createNewUser = (user) => {
   return function(dispatch) {
-    dispatch(createOrUpdateUserInfoStart());
-    appBackend.database().ref('users').once('value').then((snapshot) => {
-      let updatedUserInfo = {
-        uid: user.uid,
-        photoURL: user.photoURL,
-        displayName: user.displayName
-      };
-      if (!snapshot.val()) {
-        appBackend.database().ref('users').push(updatedUserInfo);
-      } else {
-        appBackend.database().ref('users').set(updatedUserInfo);
-      }
-      dispatch(loadChatRoom('r0'));
-    })
+      dispatch(createNewUserStart());
+      appBackend.database().ref('users').push(user);
   }
 }
+const createNewUserStart = createAction('CREATE_USER_START');
+
+const updateExistingUser = (user, chatRoomUserId) => {
+  return function(dispatch) {
+      let updates = {},
+          baseUpdatePath = 'users/' + chatRoomUserId;
+      dispatch(updateExistingUserStart());
+      updates = Object.keys(user).reduce((updatePaths, key) => {
+        updatePaths[baseUpdatePath + '/' + key] = user[key];
+        return updatePaths;
+      }, updates);
+      appBackend.database().ref().update(updates);
+  }
+}
+const updateExistingUserStart = createAction('UPDATE_USER_START');
+
 const createOrUpdateUserInfoStart = createAction('CREATE_OR_UPDATE_USER_INFO_START');
 const createOrUpdateUserInfoSuccess = createAction('CREATE_OR_UPDATE_USER_INFO_SUCCESS');
 
@@ -113,9 +141,7 @@ const sendMessage = (message, roomId, currentUser) => {
     let topush = {
       message,
       timestamp:firebase.database.ServerValue.TIMESTAMP,
-      user: {
-        uid: currentUser.uid
-      }
+      cuid: currentUser.id
     }
     let msg = appBackend.database().ref('/messages/'+roomId).push(topush, (data, error) => {
       console.log('push done', data, error);
@@ -173,6 +199,7 @@ export {
   sendMessage,
   loadRecentMessage,
   loadRecentMessageSuccess,
+  loadChatRoomAndMessageSuccess,
   loadChatRoom,
   chkUserLoginState,
   loginViaGoogle,
